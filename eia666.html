@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>東森保代 位置地圖</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <style>
+    #map {
+      height: 100vh;
+    }
+    .leaflet-popup-content img {
+      max-width: none;
+      width: 1000px;
+      height: auto;
+    }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script>
+    // 地圖初始化，放大層級設定為 19，更清楚看到位置
+    // var map = L.map('map').setView([25.0455, 121.514], 19);
+    var map = L.map('map').setView([25.0475, 121.5135], 19);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap 貢獻者'
+    }).addTo(map);
+
+    // 原始地圖標記（圖標）
+    var baseMarker = L.marker([25.04646456881736, 121.5127173019545]).addTo(map);
+
+    // 自訂文字標籤位置（略往上偏移），縮小文字框樣式
+    var customIcon = L.divIcon({
+      className: '',
+      html: '<div style="background: #F08080; border: 1px solid #666; padding: 2px 4px; border-radius: 2px; cursor: pointer; font-size: 12px;">東森保代</div>',
+      iconSize: [60, 24],
+      iconAnchor: [30, 12]  // 影響文字框位置
+    });
+
+    var labelMarker = L.marker([25.046444933786645, 121.5129993678000], {
+      icon: customIcon
+    }).addTo(map);
+
+     // 創建一個全局 popup，以便重複使用
+    const officeLayoutPopup = L.popup({
+        offset: [20, -10], // 相對於標記的偏移量，調整彈出位置  
+    }).setContent(`
+        <div class="popup-content">
+          <img src="https://raw.githubusercontent.com/redrock666-hub/eia-address/main/eia-office-layout.png" alt="辦公室席位圖" />
+        </div>
+      `);
+
+    labelMarker.on('click', function () {
+      map.openPopup(officeLayoutPopup, labelMarker.getLatLng()); // 使用 openPopup 方法並傳入位置
+    });
+  </script>
+</body>
+</html>
